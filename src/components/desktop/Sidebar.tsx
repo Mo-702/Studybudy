@@ -1,7 +1,7 @@
 import { Home, BookOpen, GraduationCap, FileText, Bot, Search, User, LogOut, Calendar, CalendarDays } from 'lucide-react';
 import { ViewType } from './MainLayout';
 import { ThemeToggle } from '../ThemeToggle';
-const logoImage = "https://i.ibb.co/Xf7YpS9z/Study-Budy-Logo.png";
+const logoImage = "https://i.postimg.cc/hGVkyVZH/Logo.png";
 interface SidebarProps {
   language: 'en' | 'ar';
   currentView: ViewType;
