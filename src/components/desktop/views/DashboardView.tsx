@@ -52,7 +52,7 @@ const translations = {
 export function DashboardView({ language, onNavigate, onMajorSelect, onChartSelect }: DashboardViewProps) {
   const t = translations[language];
   const [showNotifications, setShowNotifications] = useState(false);
-  const [hasUnreadNotifications] = useState(true); // In real app, this would be dynamic
+  const [hasUnreadNotifications] = useState(true);
 
   const todaySchedule = [
     {
@@ -118,11 +118,11 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="bg-card border-b border-border px-8 py-6">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="text-start">
             <h1 className="text-4xl text-foreground mb-2">{t.dashboard}</h1>
             <p className="text-muted-foreground">
               {t.welcome}, {language === 'en' ? 'Yousef' : 'يوسف'}
@@ -134,7 +134,7 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
             aria-label={language === 'en' ? 'Notifications' : 'الإشعارات'}
           >
             <Bell size={24} className="text-muted-foreground" aria-hidden="true" />
-            {hasUnreadNotifications && <span className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full" aria-label={language === 'en' ? 'Unread notifications' : 'إشعارات غير مقروءة'}></span>}
+            {hasUnreadNotifications && <span className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full"></span>}
           </button>
         </div>
       </div>
@@ -146,20 +146,20 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
           <div className="lg:col-span-2 space-y-6">
             {/* Current Semester Card */}
             <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-6 md:p-8 text-white hover:shadow-2xl transition-shadow">
-              <h2 className="text-2xl mb-2">{t.currentSemester}</h2>
-              <p className="text-blue-100 text-lg mb-6">{t.semester}</p>
+              <h2 className="text-2xl mb-2 text-start">{t.currentSemester}</h2>
+              <p className="text-blue-100 text-lg mb-6 text-start">{t.semester}</p>
               <div className="grid grid-cols-3 gap-3 md:gap-4">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 md:p-4 hover:bg-white/20 transition-all cursor-pointer">
                   <p className="text-blue-100 text-xs md:text-sm mb-1">{t.enrolledCourses}</p>
-                  <p className="text-2xl md:text-3xl">6</p>
+                  <p className="text-2xl md:text-3xl text-start">6</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 md:p-4 hover:bg-white/20 transition-all cursor-pointer">
                   <p className="text-blue-100 text-xs md:text-sm mb-1">{t.completedCredits}</p>
-                  <p className="text-2xl md:text-3xl">87</p>
+                  <p className="text-2xl md:text-3xl text-start">87</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 md:p-4 hover:bg-white/20 transition-all cursor-pointer">
                   <p className="text-blue-100 text-xs md:text-sm mb-1">{t.currentGPA}</p>
-                  <p className="text-2xl md:text-3xl">3.85</p>
+                  <p className="text-2xl md:text-3xl text-start">3.85</p>
                 </div>
               </div>
             </div>
@@ -174,7 +174,7 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
                 {todaySchedule.map((item, index) => (
                   <button key={index} className="w-full flex items-center gap-4 p-3 md:p-4 bg-accent rounded-2xl hover:bg-accent/80 hover:shadow-md transition-all group focus:outline-none focus:ring-2 focus:ring-ring">
                     <div className={`w-1.5 md:w-2 h-12 md:h-16 ${item.color} rounded-full group-hover:w-2 transition-all`}></div>
-                    <div className="flex-1 text-left">
+                    <div className="flex-1 text-start">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-card-foreground text-sm md:text-base">{item.course}</span>
                         <span className="text-xs md:text-sm text-muted-foreground">{item.code}</span>
@@ -185,7 +185,7 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
                         <span>{item.room}</span>
                       </div>
                     </div>
-                    <ChevronRight className="text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" size={20} aria-hidden="true" />
+                    <ChevronRight className={`text-muted-foreground group-hover:text-foreground transition-all ${language === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} size={20} />
                   </button>
                 ))}
               </div>
@@ -193,87 +193,49 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
 
             {/* Quick Access */}
             <div className="bg-card border border-border rounded-3xl p-4 md:p-6 shadow-sm hover:shadow-xl transition-shadow">
-              <h2 className="text-xl md:text-2xl text-card-foreground mb-6">{t.quickAccess}</h2>
+              <h2 className="text-xl md:text-2xl text-card-foreground mb-6 text-start">{t.quickAccess}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button
-                  onClick={() => onNavigate('courses')}
-                  className="p-4 md:p-6 bg-gradient-to-br from-blue-500/10 to-blue-500/20 hover:from-blue-500/20 hover:to-blue-500/30 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ring"
-                  aria-label={t.browseAllCourses}
-                >
-                  <BookOpen size={28} className="text-blue-600 dark:text-blue-400 mb-2 md:mb-3 mx-auto sm:mx-0" aria-hidden="true" />
-                  <p className="text-card-foreground text-sm md:text-base text-center sm:text-left">{t.browseAllCourses}</p>
+                <button onClick={() => onNavigate('courses')} className="p-4 md:p-6 bg-gradient-to-br from-blue-500/10 to-blue-500/20 hover:from-blue-500/20 hover:to-blue-500/30 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 text-start">
+                  <BookOpen size={28} className="text-blue-600 dark:text-blue-400 mb-2 md:mb-3" />
+                  <p className="text-card-foreground text-sm md:text-base">{t.browseAllCourses}</p>
                 </button>
-                <button
-                  onClick={() => onNavigate('majors')}
-                  className="p-4 md:p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/20 hover:from-purple-500/20 hover:to-purple-500/30 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ring"
-                  aria-label={t.viewAllMajors}
-                >
-                  <Award size={28} className="text-purple-600 dark:text-purple-400 mb-2 md:mb-3 mx-auto sm:mx-0" aria-hidden="true" />
-                  <p className="text-card-foreground text-sm md:text-base text-center sm:text-left">{t.viewAllMajors}</p>
+                <button onClick={() => onNavigate('majors')} className="p-4 md:p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/20 hover:from-purple-500/20 hover:to-purple-500/30 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 text-start">
+                  <Award size={28} className="text-purple-600 dark:text-purple-400 mb-2 md:mb-3" />
+                  <p className="text-card-foreground text-sm md:text-base">{t.viewAllMajors}</p>
                 </button>
-                <button
-                  onClick={() => onNavigate('ai')}
-                  className="p-4 md:p-6 bg-gradient-to-br from-green-500/10 to-green-500/20 hover:from-green-500/20 hover:to-green-500/30 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ring"
-                  aria-label={t.openAI}
-                >
-                  <BookOpen size={28} className="text-green-600 dark:text-green-400 mb-2 md:mb-3 mx-auto sm:mx-0" aria-hidden="true" />
-                  <p className="text-card-foreground text-sm md:text-base text-center sm:text-left">{t.openAI}</p>
+                <button onClick={() => onNavigate('ai')} className="p-4 md:p-6 bg-gradient-to-br from-green-500/10 to-green-500/20 hover:from-green-500/20 hover:to-green-500/30 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 text-start">
+                  <BookOpen size={28} className="text-green-600 dark:text-green-400 mb-2 md:mb-3" />
+                  <p className="text-card-foreground text-sm md:text-base">{t.openAI}</p>
                 </button>
               </div>
             </div>
 
-            {/* Analytics Charts */}
+            {/* Analytics */}
             <div className="bg-card border border-border rounded-3xl p-4 md:p-6 shadow-sm hover:shadow-xl transition-shadow">
-              <h2 className="text-xl md:text-2xl text-card-foreground mb-6">
+              <h2 className="text-xl md:text-2xl text-card-foreground mb-6 text-start">
                 {language === 'en' ? 'Analytics' : 'التحليلات'}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* Study Time Chart Card */}
-                <button
-                  onClick={() => onChartSelect && onChartSelect('studyTime')}
-                  className="p-4 md:p-5 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-900/40 dark:hover:to-blue-800/40 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 text-left group focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Clock size={32} className="text-blue-600 dark:text-blue-400" aria-hidden="true" />
+                <button onClick={() => onChartSelect?.('studyTime')} className="p-4 md:p-5 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-2xl transition-all text-start group">
+                  <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4">
+                    <Clock size={32} className="text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h3 className="text-foreground mb-1">
-                    {language === 'en' ? 'Study Time' : 'وقت الدراسة'}
-                  </h3>
-                  <p className="text-xs text-gray-600 dark:text-[#8B91B7]">
-                    {language === 'en' ? 'by Course' : 'حسب المادة'}
-                  </p>
+                  <h3 className="text-foreground mb-1">{language === 'en' ? 'Study Time' : 'وقت الدراسة'}</h3>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? 'by Course' : 'حسب المادة'}</p>
                 </button>
-
-                {/* Performance Chart Card */}
-                <button
-                  onClick={() => onChartSelect && onChartSelect('performance')}
-                  className="p-4 md:p-5 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 hover:from-green-100 hover:to-green-200 dark:hover:from-green-900/40 dark:hover:to-green-800/40 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 text-left group focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <TrendingUp size={32} className="text-green-600 dark:text-green-400" aria-hidden="true" />
+                <button onClick={() => onChartSelect?.('performance')} className="p-4 md:p-5 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-2xl transition-all text-start group">
+                  <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mb-4">
+                    <TrendingUp size={32} className="text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="text-foreground mb-1">
-                    {language === 'en' ? 'Performance' : 'الأداء'}
-                  </h3>
-                  <p className="text-xs text-gray-600 dark:text-[#8B91B7]">
-                    {language === 'en' ? 'by Level' : 'حسب المستوى'}
-                  </p>
+                  <h3 className="text-foreground mb-1">{language === 'en' ? 'Performance' : 'الأداء'}</h3>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? 'by Level' : 'حسب المستوى'}</p>
                 </button>
-
-                {/* Deadlines Chart Card */}
-                <button
-                  onClick={() => onChartSelect && onChartSelect('deadlines')}
-                  className="p-4 md:p-5 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 hover:from-purple-100 hover:to-purple-200 dark:hover:from-purple-900/40 dark:hover:to-purple-800/40 rounded-2xl transition-all hover:shadow-lg hover:scale-105 active:scale-95 text-left group focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <AlertCircle size={32} className="text-purple-600 dark:text-purple-400" aria-hidden="true" />
+                <button onClick={() => onChartSelect?.('deadlines')} className="p-4 md:p-5 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 rounded-2xl transition-all text-start group">
+                  <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-4">
+                    <AlertCircle size={32} className="text-purple-600 dark:text-purple-400" />
                   </div>
-                  <h3 className="text-foreground mb-1">
-                    {language === 'en' ? 'Deadlines' : 'المواعيد النهائية'}
-                  </h3>
-                  <p className="text-xs text-gray-600 dark:text-[#8B91B7]">
-                    {language === 'en' ? 'Overview' : 'نظرة عامة'}
-                  </p>
+                  <h3 className="text-foreground mb-1">{language === 'en' ? 'Deadlines' : 'المواعيد النهائية'}</h3>
+                  <p className="text-xs text-muted-foreground">{language === 'en' ? 'Overview' : 'نظرة عامة'}</p>
                 </button>
               </div>
             </div>
@@ -283,10 +245,10 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
           <div className="space-y-6">
             {/* Upcoming Deadlines */}
             <div className="bg-card border border-border rounded-3xl p-4 md:p-6 shadow-sm hover:shadow-xl transition-shadow">
-              <h2 className="text-lg md:text-xl text-card-foreground mb-4">{t.upcomingDeadlines}</h2>
+              <h2 className="text-lg md:text-xl text-card-foreground mb-4 text-start">{t.upcomingDeadlines}</h2>
               <div className="space-y-3">
                 {deadlines.map((deadline, index) => (
-                  <button key={index} className={`w-full text-left p-3 md:p-4 rounded-2xl ${deadline.color} border border-border/50 hover:shadow-md hover:border-border transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-ring`}>
+                  <button key={index} className={`w-full text-start p-3 md:p-4 rounded-2xl ${deadline.color} border border-border/50 transition-all active:scale-95`}>
                     <p className="text-xs md:text-sm mb-2 text-white/90">{deadline.title}</p>
                     <p className={`text-xl md:text-2xl ${deadline.accentColor}`}>
                       {deadline.daysLeft} {language === 'en' ? 'days' : 'أيام'}
@@ -298,13 +260,13 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
 
             {/* Recent Activity */}
             <div className="bg-card border border-border rounded-3xl p-4 md:p-6 shadow-sm hover:shadow-xl transition-shadow">
-              <h2 className="text-lg md:text-xl text-card-foreground mb-4">{t.recentActivity}</h2>
+              <h2 className="text-lg md:text-xl text-card-foreground mb-4 text-start">{t.recentActivity}</h2>
               <div className="space-y-4">
                 {recentActivity.map((activity, index) => (
-                  <button key={index} className="w-full text-left pb-4 border-b border-border last:border-0 hover:bg-accent p-2 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-ring">
+                  <button key={index} className="w-full text-start pb-4 border-b border-border last:border-0 hover:bg-accent p-2 rounded-xl transition-colors">
                     <p className="text-foreground mb-1 text-sm md:text-base">{activity.action}</p>
                     <p className="text-xs md:text-sm text-muted-foreground mb-1">{activity.course}</p>
-                    <p className="text-xs text-gray-400 dark:text-[#8B91B7]">{activity.time}</p>
+                    <p className="text-xs text-muted-foreground">{activity.time}</p>
                   </button>
                 ))}
               </div>
@@ -313,7 +275,6 @@ export function DashboardView({ language, onNavigate, onMajorSelect, onChartSele
         </div>
       </div>
 
-      {/* Notifications Panel */}
       <NotificationsPanel 
         language={language}
         isOpen={showNotifications}
