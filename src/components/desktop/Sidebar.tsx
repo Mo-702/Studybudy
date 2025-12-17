@@ -1,8 +1,7 @@
 import { Home, BookOpen, GraduationCap, FileText, Bot, Search, User, LogOut, Calendar, CalendarDays } from 'lucide-react';
-import logoImage from 'figma:asset/e19ab9dd58b183578a2b4114d27050536321ef11.png';
 import { ViewType } from './MainLayout';
 import { ThemeToggle } from '../ThemeToggle';
-
+const logoImage = "https://i.ibb.co/Xf7YpS9z/Study-Budy-Logo.png";
 interface SidebarProps {
   language: 'en' | 'ar';
   currentView: ViewType;
