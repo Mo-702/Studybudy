@@ -9,13 +9,11 @@ interface InteractiveExamProps {
 }
 
 export function InteractiveExam({ material, language, t }: InteractiveExamProps) {
-  // State for answers and submission
   const [mcqAnswers, setMcqAnswers] = useState<{[key: number]: number}>({});
   const [tfAnswers, setTfAnswers] = useState<{[key: number]: boolean}>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Correct answers (index of correct option for MCQ, boolean for T/F)
-  const mcqCorrectAnswers = [0, 1, 0, 1]; // A, B, A, B
+  const mcqCorrectAnswers = [0, 1, 0, 1];
   const tfCorrectAnswers = [true, false, false, true];
 
   const mcqQuestions = language === 'en' ? [
@@ -43,62 +41,27 @@ export function InteractiveExam({ material, language, t }: InteractiveExamProps)
   ];
 
   const handleMcqChange = (questionIndex: number, optionIndex: number) => {
-    if (!isSubmitted) {
-      setMcqAnswers({ ...mcqAnswers, [questionIndex]: optionIndex });
-    }
+    if (!isSubmitted) setMcqAnswers({ ...mcqAnswers, [questionIndex]: optionIndex });
   };
 
   const handleTfChange = (questionIndex: number, value: boolean) => {
-    if (!isSubmitted) {
-      setTfAnswers({ ...tfAnswers, [questionIndex]: value });
-    }
+    if (!isSubmitted) setTfAnswers({ ...tfAnswers, [questionIndex]: value });
   };
 
   const handleSubmit = () => {
     setIsSubmitted(true);
-    // Calculate score
-    let mcqScore = 0;
-    let tfScore = 0;
-    mcqCorrectAnswers.forEach((correct, index) => {
-      if (mcqAnswers[index] === correct) mcqScore++;
-    });
-    tfCorrectAnswers.forEach((correct, index) => {
-      if (tfAnswers[index] === correct) tfScore++;
-    });
-    const totalScore = (mcqScore * 10) + (tfScore * 5); // 10 marks per MCQ, 5 per T/F
-    const maxScore = (mcqCorrectAnswers.length * 10) + (tfCorrectAnswers.length * 5);
-    
+    const score = calculateScore();
     toast.success(
       language === 'en' 
-        ? `Exam submitted! Score: ${totalScore}/${maxScore}` 
-        : `تم تسليم الاختبار! النتيجة: ${totalScore}/${maxScore}`,
-      { duration: 3000 }
+        ? `Exam submitted! Score: ${score.totalScore}/${score.maxScore}` 
+        : `تم تسليم الاختبار! النتيجة: ${score.totalScore}/${score.maxScore}`
     );
   };
 
-  const getMcqFeedback = (questionIndex: number) => {
-    if (!isSubmitted) return null;
-    const userAnswer = mcqAnswers[questionIndex];
-    const correctAnswer = mcqCorrectAnswers[questionIndex];
-    return userAnswer === correctAnswer;
-  };
-
-  const getTfFeedback = (questionIndex: number) => {
-    if (!isSubmitted) return null;
-    const userAnswer = tfAnswers[questionIndex];
-    const correctAnswer = tfCorrectAnswers[questionIndex];
-    return userAnswer === correctAnswer;
-  };
-
   const calculateScore = () => {
-    let mcqScore = 0;
-    let tfScore = 0;
-    mcqCorrectAnswers.forEach((correct, index) => {
-      if (mcqAnswers[index] === correct) mcqScore++;
-    });
-    tfCorrectAnswers.forEach((correct, index) => {
-      if (tfAnswers[index] === correct) tfScore++;
-    });
+    let mcqScore = 0; let tfScore = 0;
+    mcqCorrectAnswers.forEach((correct, index) => { if (mcqAnswers[index] === correct) mcqScore++; });
+    tfCorrectAnswers.forEach((correct, index) => { if (tfAnswers[index] === correct) tfScore++; });
     const totalScore = (mcqScore * 10) + (tfScore * 5);
     const maxScore = (mcqCorrectAnswers.length * 10) + (tfCorrectAnswers.length * 5);
     return { totalScore, maxScore, percentage: (totalScore / maxScore) * 100 };
@@ -107,270 +70,72 @@ export function InteractiveExam({ material, language, t }: InteractiveExamProps)
   const score = isSubmitted ? calculateScore() : null;
 
   return (
-    <div className="space-y-6">
-      {/* Results Summary (shown after submission) */}
+    <div className="space-y-6 w-full max-w-full overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      {/* Results Summary */}
       {isSubmitted && score && (
-        <div className="bg-card rounded-3xl p-8 shadow-sm border-2 border-blue-500">
+        <div className="bg-card rounded-3xl p-4 md:p-8 shadow-sm border-2 border-blue-500 mx-auto">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full text-white text-3xl mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full text-white text-2xl md:text-3xl mb-4">
               {score.percentage >= 70 ? '🎉' : score.percentage >= 50 ? '✓' : '📚'}
             </div>
-            <h2 className="text-3xl text-foreground mb-2">
-              {language === 'en' ? 'Exam Results' : 'نتائج الاختبار'}
-            </h2>
-            <div className="text-5xl text-blue-600 dark:text-blue-400 mb-2">
-              {score.totalScore}/{score.maxScore}
-            </div>
-            <div className="text-2xl text-muted-foreground mb-4">
-              {score.percentage.toFixed(1)}%
-            </div>
-            <div className={`inline-block px-6 py-2 rounded-xl text-lg ${
-              score.percentage >= 70 ? 'bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/20' :
-              score.percentage >= 50 ? 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border border-yellow-500/20' :
-              'bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20'
-            }`}>
-              {score.percentage >= 70 
-                ? (language === 'en' ? 'Excellent!' : 'ممتاز!')
-                : score.percentage >= 50
-                ? (language === 'en' ? 'Good' : 'جيد')
-                : (language === 'en' ? 'Needs Improvement' : 'يحتاج تحسين')}
-            </div>
+            <h2 className="text-xl md:text-3xl text-foreground mb-2">{language === 'en' ? 'Results' : 'النتائج'}</h2>
+            <div className="text-3xl md:text-5xl text-blue-600 font-bold mb-2">{score.totalScore}/{score.maxScore}</div>
+            <div className="text-lg md:text-2xl text-muted-foreground mb-4">{score.percentage.toFixed(1)}%</div>
           </div>
         </div>
       )}
 
-      <div className="bg-card rounded-3xl p-8 shadow-sm border border-border">
-        <h2 className="text-3xl text-foreground mb-6">{t[language].examSections}</h2>
+      <div className="bg-card rounded-3xl p-4 md:p-8 shadow-sm border border-border">
+        <h2 className="text-2xl md:text-3xl text-foreground mb-6 text-start">{t[language].examSections}</h2>
 
-        {/* Multiple Choice */}
+        {/* MCQ Section */}
         <div className="mb-8">
-          <h3 className="text-2xl text-red-600 mb-4">{t[language].multipleChoice} (40 {language === 'en' ? 'marks' : 'درجة'})</h3>
+          <h3 className="text-xl md:text-2xl text-red-600 mb-4 text-start">{t[language].multipleChoice}</h3>
           <div className="space-y-4">
-            {mcqQuestions.map((item: any, index: number) => {
-              const isCorrect = getMcqFeedback(index);
-              const userAnswer = mcqAnswers[index];
-              const correctAnswer = mcqCorrectAnswers[index];
-              
-              return (
-                <div 
-                  key={index} 
-                  className={`p-5 rounded-2xl transition-all border-2 ${
-                    isSubmitted 
-                      ? isCorrect 
-                        ? 'bg-green-500/10 border-green-500' 
-                        : userAnswer !== undefined
-                        ? 'bg-red-500/10 border-red-500'
-                        : 'bg-secondary border-border'
-                      : 'bg-secondary border-border hover:border-accent'
-                  }`}
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    {isSubmitted && (
-                      <div className="flex-shrink-0 mt-1">
-                        {isCorrect ? (
-                          <CheckCircle2 className="text-green-600 dark:text-green-400" size={24} />
-                        ) : userAnswer !== undefined ? (
-                          <XCircle className="text-red-600 dark:text-red-400" size={24} />
-                        ) : (
-                          <div className="w-6 h-6" />
-                        )}
-                      </div>
-                    )}
-                    <p className="text-foreground flex-1">
-                      <strong>Q{index + 1}.</strong> {item.q}
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-2 ml-9">
-                    {item.options.map((option: string, i: number) => {
-                      const isSelected = mcqAnswers[index] === i;
-                      const isCorrectOption = correctAnswer === i;
-                      
-                      return (
-                        <label
-                          key={i}
-                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border-2 ${
-                            isSubmitted
-                              ? isCorrectOption
-                                ? 'bg-green-500/10 border-green-500 dark:bg-green-500/20'
-                                : isSelected && !isCorrectOption
-                                ? 'bg-red-500/10 border-red-500 dark:bg-red-500/20'
-                                : 'bg-card border-border'
-                              : isSelected
-                              ? 'bg-blue-500/10 border-blue-500 dark:bg-blue-500/20'
-                              : 'bg-card border-border hover:bg-accent'
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name={`mcq-${index}`}
-                            checked={isSelected}
-                            onChange={() => handleMcqChange(index, i)}
-                            disabled={isSubmitted}
-                            className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                          />
-                          <span className={`flex-1 ${
-                            isSubmitted && isCorrectOption
-                              ? 'text-green-700 dark:text-green-300'
-                              : isSubmitted && isSelected && !isCorrectOption
-                              ? 'text-red-700 dark:text-red-300'
-                              : 'text-foreground'
-                          }`}>
-                            {option}
-                            {isSubmitted && isCorrectOption && (
-                              <span className="ml-2 text-green-600 dark:text-green-400">✓ {language === 'en' ? 'Correct' : 'صحيح'}</span>
-                            )}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                  
-                  {isSubmitted && (
-                    <div className={`mt-3 p-3 rounded-lg text-sm ml-9 ${
-                      isCorrect ? 'bg-green-500/10 text-green-800 dark:text-green-300 border border-green-500/20' : 'bg-red-500/10 text-red-800 dark:text-red-300 border border-red-500/20'
-                    }`}>
-                      {isCorrect 
-                        ? (language === 'en' ? '✓ Your answer is correct!' : '✓ إجابتك صحيحة!')
-                        : (language === 'en' 
-                          ? `✗ Incorrect. The correct answer is option ${String.fromCharCode(65 + correctAnswer)}.`
-                          : `✗ خطأ. الإجابة الصحيحة هي الخيار ${String.fromCharCode(1571 + correctAnswer)}.`)}
-                    </div>
-                  )}
+            {mcqQuestions.map((item, index) => (
+              <div key={index} className={`p-4 md:p-5 rounded-2xl border-2 ${isSubmitted ? (mcqAnswers[index] === mcqCorrectAnswers[index] ? 'bg-green-500/5 border-green-500' : 'bg-red-500/5 border-red-500') : 'bg-secondary border-transparent'}`}>
+                <div className="flex gap-3 mb-4">
+                   <p className="text-foreground text-sm md:text-base font-medium text-start">
+                    <strong>Q{index + 1}.</strong> {item.q}
+                  </p>
                 </div>
-              );
-            })}
+                <div className="grid grid-cols-1 gap-2">
+                  {item.options.map((option, i) => (
+                    <label key={i} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border-2 transition-all ${mcqAnswers[index] === i ? 'border-blue-500 bg-blue-500/5' : 'border-border bg-card'}`}>
+                      <input type="radio" className="w-4 h-4" checked={mcqAnswers[index] === i} onChange={() => handleMcqChange(index, i)} disabled={isSubmitted} />
+                      <span className="text-sm md:text-base text-start flex-1 break-words">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* True/False */}
+        {/* True/False Section */}
         <div className="mb-8">
-          <h3 className="text-2xl text-purple-600 mb-4">{t[language].trueFalse} (20 {language === 'en' ? 'marks' : 'درجة'})</h3>
+          <h3 className="text-xl md:text-2xl text-purple-600 mb-4 text-start">{t[language].trueFalse}</h3>
           <div className="space-y-4">
-            {trueFalseQuestions.map((q: string, index: number) => {
-              const isCorrect = getTfFeedback(index);
-              const userAnswer = tfAnswers[index];
-              const correctAnswer = tfCorrectAnswers[index];
-              
-              return (
-                <div 
-                  key={index}
-                  className={`p-5 rounded-2xl transition-all border-2 ${
-                    isSubmitted 
-                      ? isCorrect 
-                        ? 'bg-green-500/10 border-green-500' 
-                        : userAnswer !== undefined
-                        ? 'bg-red-500/10 border-red-500'
-                        : 'bg-secondary border-border'
-                      : 'bg-secondary border-border hover:border-accent'
-                  }`}
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    {isSubmitted && (
-                      <div className="flex-shrink-0 mt-1">
-                        {isCorrect ? (
-                          <CheckCircle2 className="text-green-600 dark:text-green-400" size={24} />
-                        ) : userAnswer !== undefined ? (
-                          <XCircle className="text-red-600 dark:text-red-400" size={24} />
-                        ) : (
-                          <div className="w-6 h-6" />
-                        )}
-                      </div>
-                    )}
-                    <p className="text-foreground flex-1">
-                      <strong>Q{index + 1}.</strong> {q}
-                    </p>
-                  </div>
-                  
-                  <div className="flex gap-4 ml-9">
-                    <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer transition-all border-2 ${
-                      isSubmitted
-                        ? correctAnswer === true
-                          ? 'bg-green-500/10 border-green-500 dark:bg-green-500/20'
-                          : tfAnswers[index] === true && correctAnswer !== true
-                          ? 'bg-red-500/10 border-red-500 dark:bg-red-500/20'
-                          : 'bg-card border-border'
-                        : tfAnswers[index] === true
-                        ? 'bg-blue-500/10 border-blue-500 dark:bg-blue-500/20'
-                        : 'bg-card border-border hover:bg-accent'
-                    }`}>
-                      <input
-                        type="radio"
-                        name={`tf-${index}`}
-                        checked={tfAnswers[index] === true}
-                        onChange={() => handleTfChange(index, true)}
-                        disabled={isSubmitted}
-                        className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                      />
-                      <span className={`${
-                        isSubmitted && correctAnswer === true
-                          ? 'text-green-700 dark:text-green-300'
-                          : isSubmitted && tfAnswers[index] === true && correctAnswer !== true
-                          ? 'text-red-700 dark:text-red-300'
-                          : 'text-foreground'
-                      }`}>
-                        ⭕ {language === 'en' ? 'True' : 'صح'}
-                      </span>
-                    </label>
-                    
-                    <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer transition-all border-2 ${
-                      isSubmitted
-                        ? correctAnswer === false
-                          ? 'bg-green-500/10 border-green-500 dark:bg-green-500/20'
-                          : tfAnswers[index] === false && correctAnswer !== false
-                          ? 'bg-red-500/10 border-red-500 dark:bg-red-500/20'
-                          : 'bg-card border-border'
-                        : tfAnswers[index] === false
-                        ? 'bg-blue-500/10 border-blue-500 dark:bg-blue-500/20'
-                        : 'bg-card border-border hover:bg-accent'
-                    }`}>
-                      <input
-                        type="radio"
-                        name={`tf-${index}`}
-                        checked={tfAnswers[index] === false}
-                        onChange={() => handleTfChange(index, false)}
-                        disabled={isSubmitted}
-                        className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                      />
-                      <span className={`${
-                        isSubmitted && correctAnswer === false
-                          ? 'text-green-700 dark:text-green-300'
-                          : isSubmitted && tfAnswers[index] === false && correctAnswer !== false
-                          ? 'text-red-700 dark:text-red-300'
-                          : 'text-foreground'
-                      }`}>
-                        ❌ {language === 'en' ? 'False' : 'خطأ'}
-                      </span>
-                    </label>
-                  </div>
-                  
-                  {isSubmitted && (
-                    <div className={`mt-3 p-3 rounded-lg text-sm ml-9 ${
-                      isCorrect ? 'bg-green-500/10 text-green-800 dark:text-green-300 border border-green-500/20' : 'bg-red-500/10 text-red-800 dark:text-red-300 border border-red-500/20'
-                    }`}>
-                      {isCorrect 
-                        ? (language === 'en' ? '✓ Your answer is correct!' : '✓ إجابتك صحيحة!')
-                        : (language === 'en' 
-                          ? `✗ Incorrect. The correct answer is ${correctAnswer ? 'True' : 'False'}.`
-                          : `✗ خطأ. الإجابة الصحيحة هي ${correctAnswer ? 'صح' : 'خطأ'}.`)}
-                    </div>
-                  )}
+            {trueFalseQuestions.map((q, index) => (
+              <div key={index} className="p-4 md:p-5 rounded-2xl bg-secondary border border-border">
+                <p className="text-foreground mb-4 text-sm md:text-base text-start font-medium"><strong>Q{index + 1}.</strong> {q}</p>
+                <div className="flex flex-wrap gap-3">
+                  {[true, false].map((val) => (
+                    <button key={val.toString()} onClick={() => handleTfChange(index, val)} disabled={isSubmitted}
+                      className={`flex-1 min-w-[120px] p-3 rounded-xl border-2 transition-all ${tfAnswers[index] === val ? 'border-purple-500 bg-purple-500/10' : 'border-border bg-card'}`}>
+                      {val ? (language === 'en' ? '⭕ True' : '⭕ صح') : (language === 'en' ? '❌ False' : '❌ خطأ')}
+                    </button>
+                  ))}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Submit Button */}
         {!isSubmitted && (
-          <div className="flex justify-center pt-6">
-            <button
-              onClick={handleSubmit}
-              className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-lg"
-            >
-              {language === 'en' ? '📝 Submit Exam' : '📝 تسليم الاختبار'}
-            </button>
-          </div>
+          <button onClick={handleSubmit} className="w-full py-4 bg-red-600 text-white rounded-xl font-bold text-lg hover:bg-red-700 transition-all">
+            {language === 'en' ? 'Submit Exam' : 'تسليم الاختبار'}
+          </button>
         )}
       </div>
     </div>
