@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Globe, Mail, Lock, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
-import logoImage from 'figma:asset/e19ab9dd58b183578a2b4114d27050536321ef11.png';
+const logoImage = "https://i.postimg.cc/hGVkyVZH/Logo.png";
 import { ThemeToggle } from '../ThemeToggle';
 
 interface AuthScreenProps {
