@@ -40,7 +40,7 @@ export function Sidebar({ language, currentView, onViewChange, onLogout }: Sideb
       <div className="p-4 lg:p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-2 lg:gap-3">
           <div className="rounded-[20px] overflow-hidden flex-shrink-0">
-            <img src={logoImage} alt="Study Buddy" className="w-12 h-12 lg:w-16 lg:h-16 object-cover" />
+            <img src={logoImage} alt="Study Buddy" className="w-auto h-12 lg:w-16 lg:h-16 object-contain" />
           </div>
           <div>
             <h1 className="text-lg lg:text-xl text-sidebar-foreground">Study Buddy</h1>
@@ -121,7 +121,7 @@ export function MobileSidebar({ language, currentView, onViewChange, onLogout }:
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
           <div className="rounded-[20px] overflow-hidden flex-shrink-0">
-            <img src={logoImage} alt="Study Buddy" className="w-12 h-12 object-cover" />
+            <img src={logoImage} alt="Study Buddy" className="w-auto h-12 object-contain" />
           </div>
           <div>
             <h1 className="text-lg text-sidebar-foreground">Study Buddy</h1>
