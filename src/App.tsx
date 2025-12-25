@@ -14,10 +14,8 @@ export default function App() {
     setShowLogoutSuccess(true);
   };
 
-  // Show logout success toast when login page loads after logout
   useEffect(() => {
     if (!isAuthenticated && showLogoutSuccess) {
-      // Small delay to ensure login page is rendered
       const timer = setTimeout(() => {
         toast.success(
           language === 'en' 
@@ -54,6 +52,36 @@ export default function App() {
         onLanguageChange={setLanguage}
         onLogout={handleLogout}
       />
+
+      {/* زر مشروع تصوير البيانات - يظهر فقط بعد تسجيل الدخول */}
+      <a 
+        href="admin_dashboard.html" 
+        target="_blank" 
+        style={{
+          position: 'fixed', 
+          bottom: '20px', 
+          right: '20px', 
+          background: '#5856D6', 
+          color: 'white', 
+          padding: '12px 20px', 
+          borderRadius: '50px', 
+          textDecoration: 'none', 
+          zIndex: 9999, 
+          fontSize: '14px',
+          fontWeight: 'bold',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'transform 0.2s'
+        }}
+        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+      >
+        <span>📊</span>
+        {language === 'en' ? 'Data Viz Dashboard' : 'مشروع تصوير البيانات'}
+      </a>
+
       <Toaster position="top-center" richColors />
     </ThemeProvider>
   );
