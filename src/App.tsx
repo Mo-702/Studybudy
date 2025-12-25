@@ -76,7 +76,7 @@ export default function App() {
         }}
       >
         <span>📊</span>
-        {language === 'en' ? 'Data Viz Dashboard' : 'مشروع تصوير البيانات'}
+        {language === 'en' ? 'Data Vis Dashboard' : 'مشروع تصوير البيانات'}
       </a>
 
       <Toaster position="top-center" richColors />
