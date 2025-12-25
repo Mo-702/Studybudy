@@ -2,134 +2,145 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Study Buddy - Smart Dashboards</title>
+    <title>Study Buddy - Executive Dashboards</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #5856D6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        .navbar { background: var(--card); padding: 0.5rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); height: 50px; }
-        .nav-links button { background: #334155; border: none; color: white; padding: 6px 12px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+        .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); height: 45px; flex-shrink: 0; }
+        .nav-links button { background: #334155; border: none; color: white; padding: 5px 12px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .nav-links button.active { background: var(--primary); }
-        .back-home { color: #94a3b8; text-decoration: none; font-weight: bold; font-size: 13px; }
+        .back-home { color: #94a3b8; text-decoration: none; font-size: 12px; font-weight: bold; }
 
-        .container { flex: 1; padding: 15px; display: none; overflow: hidden; }
-        .container.active { display: flex; flex-direction: column; }
+        .container { flex: 1; padding: 10px; display: none; flex-direction: column; overflow: hidden; }
+        .container.active { display: flex; }
         
-        .slicer-bar { background: #1e293b; padding: 8px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-size: 13px; border: 1px solid #334155; }
-        .info-icon { cursor: pointer; background: var(--primary); color: white; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; position: relative; }
-        .tooltip-text { visibility: hidden; width: 250px; background-color: #334155; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; top: 125%; left: 0; opacity: 0; transition: opacity 0.3s; font-size: 11px; border: 1px solid var(--primary); }
+        .slicer-bar { background: #1e293b; padding: 6px 12px; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; font-size: 12px; border: 1px solid #334155; flex-shrink: 0; }
+        .info-icon { cursor: help; background: var(--primary); color: white; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; position: relative; }
+        .tooltip-text { visibility: hidden; width: 220px; background: #334155; color: #fff; text-align: center; border-radius: 4px; padding: 8px; position: absolute; z-index: 100; top: 120%; left: 0; opacity: 0; transition: 0.3s; font-size: 10px; border: 1px solid var(--primary); pointer-events: none; }
         .info-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; height: 80px; }
-        .kpi-card { background: var(--card); border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #334155; }
-        .kpi-card h3 { font-size: 11px; margin: 0; color: #94a3b8; }
-        .kpi-card p { font-size: 18px; margin: 5px 0 0; font-weight: bold; color: var(--primary); }
+        .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; height: 60px; flex-shrink: 0; }
+        .kpi-card { background: var(--card); border-radius: 6px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .kpi-card h3 { font-size: 10px; margin: 0; color: #94a3b8; text-transform: uppercase; }
+        .kpi-card p { font-size: 16px; margin: 2px 0 0; font-weight: bold; color: var(--primary); }
 
-        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex: 1; min-height: 0; }
-        .chart-item { background: var(--card); border-radius: 8px; padding: 10px; border: 1px solid #334155; display: flex; flex-direction: column; }
-        .chart-item h4 { font-size: 12px; margin: 0 0 5px 0; text-align: center; }
-        canvas { flex: 1 !important; max-width: 100% !important; max-height: 100% !important; }
+        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; flex: 1; min-height: 0; }
+        .chart-item { background: var(--card); border-radius: 6px; padding: 8px; border: 1px solid #334155; display: flex; flex-direction: column; min-height: 0; }
+        .chart-item h4 { font-size: 11px; margin: 0 0 5px 0; text-align: center; color: #cbd5e1; }
+        canvas { flex: 1 !important; width: 100% !important; height: 100% !important; }
         
-        select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 2px 5px; }
+        select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 2px; font-size: 11px; }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <a href="/" class="back-home">← Home Page</a>
+    <a href="/" class="back-home">← Home</a>
     <div class="nav-links">
-        <button class="active" onclick="openTab('ceo')">CEO (Strategic)</button>
-        <button onclick="openTab('manager')">Manager (Operational)</button>
-        <button onclick="openTab('analyst')">Analyst (Analytical)</button>
+        <button class="active" onclick="switchTab('ceo')">CEO (Strategic)</button>
+        <button onclick="switchTab('manager')">Manager (Operational)</button>
+        <button onclick="switchTab('analyst')">Analyst (Analytical)</button>
     </div>
+    <div style="font-size: 12px; font-weight: bold; color: var(--primary);">STUDY BUDDY DSS</div>
 </nav>
 
 <div id="ceo" class="container active">
     <div class="slicer-bar">
         Year: <select id="ceoYear" onchange="updateCEO()"><option value="2024">2024</option><option value="2023">2023</option></select>
-        <div class="info-icon">! <span class="tooltip-text">Strategic Slicer: Minimal interactivity for CEO to focus on yearly growth without distraction.</span></div>
+        <div class="info-icon">! <span class="tooltip-text">Strategic Slicer: Changes all yearly trends and regional profits to support executive decisions.</span></div>
     </div>
     <div class="kpi-row">
-        <div class="kpi-card"><h3>Total Sales</h3><p id="ceo-s">$2.4M</p></div>
-        <div class="kpi-card"><h3>Total Profit</h3><p id="ceo-p">$840K</p></div>
-        <div class="kpi-card"><h3>YoY Growth</h3><p id="ceo-g">+18%</p></div>
+        <div class="kpi-card"><h3>Total Sales</h3><p id="cs">$2.4M</p></div>
+        <div class="kpi-card"><h3>Total Profit</h3><p id="cp">$840K</p></div>
+        <div class="kpi-card"><h3>YoY Growth</h3><p id="cg">+18%</p></div>
     </div>
     <div class="charts-grid">
-        <div class="chart-item"><h4>Sales Trend</h4><canvas id="c1"></canvas></div>
-        <div class="chart-item"><h4>Profit by Region</h4><canvas id="c2"></canvas></div>
+        <div class="chart-item"><h4>Yearly Sales Trend</h4><canvas id="ceo1"></canvas></div>
+        <div class="chart-item"><h4>Profit by Region</h4><canvas id="ceo2"></canvas></div>
     </div>
 </div>
 
 <div id="manager" class="container">
     <div class="slicer-bar">
-        Region: <select id="mgrRegion" onchange="updateMGR()"><option value="All">All Regions</option><option value="North">North</option></select>
-        <div class="info-icon">! <span class="tooltip-text">Operational Slicers: Used for real-time monitoring and immediate actions in specific areas.</span></div>
+        Region: <select id="mgrReg" onchange="updateMGR()"><option value="Global">Global</option><option value="Local">Local</option></select>
+        <div class="info-icon">! <span class="tooltip-text">Operational Slicer: Updates product units, segment profits, and country sales for the selected region.</span></div>
     </div>
     <div class="kpi-row">
-        <div class="kpi-card"><h3>Monthly Sales</h3><p id="mgr-s">$125K</p></div>
-        <div class="kpi-card"><h3>Target Met</h3><p id="mgr-t">92%</p></div>
-        <div class="kpi-card"><h3>Active Units</h3><p id="mgr-u">1,240</p></div>
+        <div class="kpi-card"><h3>Monthly Sales</h3><p id="ms">$125K</p></div>
+        <div class="kpi-card"><h3>Target Met</h3><p id="mt">92%</p></div>
+        <div class="kpi-card"><h3>Discount Loss</h3><p id="md">-$4.2K</p></div>
     </div>
     <div class="charts-grid">
-        <div class="chart-item"><h4>Sales by Product</h4><canvas id="m1"></canvas></div>
-        <div class="chart-item"><h4>Discount Impact</h4><canvas id="m2"></canvas></div>
+        <div class="chart-item"><h4>Sales by Product</h4><canvas id="mgr1"></canvas></div>
+        <div class="chart-item"><h4>Profit by Segment</h4><canvas id="mgr2"></canvas></div>
+        <div class="chart-item"><h4>Discount vs Profit</h4><canvas id="mgr3"></canvas></div>
+        <div class="chart-item"><h4>Sales by Country</h4><canvas id="mgr4"></canvas></div>
     </div>
 </div>
 
 <div id="analyst" class="container">
     <div class="slicer-bar">
-        Model: <select id="anlModel" onchange="updateANL()"><option value="A">Baseline</option><option value="B">Aggressive</option></select>
-        <div class="info-icon">! <span class="tooltip-text">Analytical Slicers: Deep drill-down to find root causes of profit variations.</span></div>
+        Analysis Model: <select id="anlMod" onchange="updateANL()"><option value="Standard">Standard</option><option value="Deep">Deep Dive</option></select>
+        <div class="info-icon">! <span class="tooltip-text">Analytical Slicer: Correlates manufacturing costs and segment trends for deep strategy adjustment.</span></div>
     </div>
     <div class="charts-grid">
-        <div class="chart-item"><h4>Cost vs Sales</h4><canvas id="a1"></canvas></div>
-        <div class="chart-item"><h4>Segment Correlation</h4><canvas id="a2"></canvas></div>
+        <div class="chart-item"><h4>Sales vs Profit</h4><canvas id="an1"></canvas></div>
+        <div class="chart-item"><h4>Cost vs Sales</h4><canvas id="an2"></canvas></div>
+        <div class="chart-item"><h4>Profit Matrix</h4><canvas id="an3"></canvas></div>
+        <div class="chart-item"><h4>Trend by Segment</h4><canvas id="an4"></canvas></div>
     </div>
 </div>
 
 <script>
-    let charts = {};
-    const opt = { responsive: true, maintainAspectRatio: false, plugins: { tooltip: { enabled: true } } };
+    let c = {};
+    const chartOpt = { responsive: true, maintainAspectRatio: false, plugins: { tooltip: { enabled: true } } };
 
-    function openTab(id) {
-        document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    function switchTab(id) {
+        document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         event.currentTarget.classList.add('active');
     }
 
-    // CEO الحقيقي
+    // --- CEO LOGIC ---
     function updateCEO() {
-        const val = document.getElementById('ceoYear').value;
-        const data = val === '2024' ? [1.2, 1.8, 2.4] : [0.8, 1.1, 1.3];
-        document.getElementById('ceo-s').innerText = val === '2024' ? '$2.4M' : '$1.3M';
-        charts.ceo1.data.datasets[0].data = data;
-        charts.ceo1.update();
+        const v = document.getElementById('ceoYear').value;
+        const s = v === '2024' ? [1.2, 1.8, 2.4] : [0.8, 1.1, 1.3];
+        const p = v === '2024' ? [400, 300, 200] : [200, 150, 100];
+        document.getElementById('cs').innerText = v === '2024' ? '$2.4M' : '$1.3M';
+        document.getElementById('cp').innerText = v === '2024' ? '$840K' : '$450K';
+        c.ceo1.data.datasets[0].data = s; c.ceo1.update();
+        c.ceo2.data.datasets[0].data = p; c.ceo2.update();
     }
-    charts.ceo1 = new Chart(document.getElementById('c1'), { type: 'line', data: { labels: ['Q1','Q2','Q3'], datasets: [{label:'Sales', data:[1.2,1.8,2.4], borderColor:'#5856D6'}] }, options: opt });
-    charts.ceo2 = new Chart(document.getElementById('c2'), { type: 'bar', data: { labels: ['N','S','E','W'], datasets: [{label:'Profit', data:[400,300,200,100], backgroundColor:'#34d399'}] }, options: opt });
+    c.ceo1 = new Chart(document.getElementById('ceo1'), { type: 'line', data: { labels: ['Q1','Q2','Q3'], datasets: [{label:'Sales', data:[1.2,1.8,2.4], borderColor:'#5856D6'}] }, options: chartOpt });
+    c.ceo2 = new Chart(document.getElementById('ceo2'), { type: 'bar', data: { labels: ['NA','EU','AS'], datasets: [{label:'Profit', data:[400,300,200], backgroundColor:'#34d399'}] }, options: chartOpt });
 
-    // Manager الحقيقي
+    // --- MANAGER LOGIC ---
     function updateMGR() {
-        const reg = document.getElementById('mgrRegion').value;
-        const data = reg === 'All' ? [500, 800] : [200, 300];
-        document.getElementById('mgr-s').innerText = reg === 'All' ? '$125K' : '$45K';
-        charts.mgr1.data.datasets[0].data = data;
-        charts.mgr1.update();
+        const r = document.getElementById('mgrReg').value;
+        document.getElementById('ms').innerText = r === 'Global' ? '$125K' : '$60K';
+        const d1 = r === 'Global' ? [500, 800, 450] : [200, 300, 150];
+        const d2 = r === 'Global' ? [50, 30, 40] : [20, 10, 15];
+        c.m1.data.datasets[0].data = d1; c.m1.update();
+        c.m2.data.datasets[0].data = d2; c.m2.update();
     }
-    charts.mgr1 = new Chart(document.getElementById('m1'), { type: 'bar', data: { labels: ['Velo','Amarilla'], datasets: [{label:'Units', data:[500,800], backgroundColor:'#fbbf24'}] }, options: opt });
-    charts.mgr2 = new Chart(document.getElementById('m2'), { type: 'scatter', data: { datasets: [{label:'Impact', data:[{x:5,y:50},{x:15,y:20}], backgroundColor:'#f87171'}] }, options: opt });
+    c.m1 = new Chart(document.getElementById('mgr1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{label:'Units', data:[500,800,450], backgroundColor:'#fbbf24'}] }, options: chartOpt });
+    c.m2 = new Chart(document.getElementById('mgr2'), { type: 'pie', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[50,30,40], backgroundColor:['#5856D6','#34d399','#f87171']}] }, options: chartOpt });
+    c.m3 = new Chart(document.getElementById('mgr3'), { type: 'scatter', data: { datasets: [{label:'Disc/Prof', data:[{x:5,y:50},{x:15,y:20}], backgroundColor:'#f87171'}] }, options: chartOpt });
+    c.m4 = new Chart(document.getElementById('mgr4'), { type: 'bar', data: { labels: ['US','CA','FR'], datasets: [{label:'Sales', data:[1000,600,400], backgroundColor:'#5856D6'}] }, options: chartOpt });
 
-    // Analyst الحقيقي
+    // --- ANALYST LOGIC ---
     function updateANL() {
-        const mod = document.getElementById('anlModel').value;
-        charts.anl1.data.datasets[0].data = mod === 'A' ? [{x:10,y:100}] : [{x:20,y:200}];
-        charts.anl1.update();
+        const m = document.getElementById('anlMod').value;
+        const d = m === 'Standard' ? [{x:10,y:100}] : [{x:50,y:500}];
+        c.a1.data.datasets[0].data = d; c.a1.update();
     }
-    charts.anl1 = new Chart(document.getElementById('a1'), { type: 'scatter', data: { datasets: [{label:'Correlation', data:[{x:10,y:100}], backgroundColor:'#fbbf24'}] }, options: opt });
-    charts.anl2 = new Chart(document.getElementById('a2'), { type: 'line', data: { labels: ['Jan','Feb'], datasets: [{label:'Trend', data:[40,80], borderColor:'#5856D6'}] }, options: opt });
-
+    c.a1 = new Chart(document.getElementById('an1'), { type: 'scatter', data: { datasets: [{label:'S/P', data:[{x:10,y:100}], backgroundColor:'#34d399'}] }, options: chartOpt });
+    c.a2 = new Chart(document.getElementById('an2'), { type: 'scatter', data: { datasets: [{label:'C/S', data:[{x:5,y:50}], backgroundColor:'#fbbf24'}] }, options: chartOpt });
+    c.a3 = new Chart(document.getElementById('an3'), { type: 'bar', data: { labels: ['X','Y'], datasets: [{label:'Matrix', data:[40,30], backgroundColor:'#818cf8'}] }, options: chartOpt });
+    c.a4 = new Chart(document.getElementById('an4'), { type: 'line', data: { labels: ['W1','W2'], datasets: [{label:'Trend', data:[10,20], borderColor:'#f87171'}] }, options: chartOpt });
 </script>
 </body>
 </html>
