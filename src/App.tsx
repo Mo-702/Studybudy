@@ -55,7 +55,7 @@ export default function App() {
 
       {/* زر مشروع تصوير البيانات - يظهر فقط بعد تسجيل الدخول */}
       <a 
-        href="admin_dashboard.html" 
+        href="/admin_dashboard.html" 
         target="_blank" 
         style={{
           position: 'fixed', 
@@ -72,11 +72,8 @@ export default function App() {
           boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          transition: 'transform 0.2s'
+          gap: '8px'
         }}
-        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
       >
         <span>📊</span>
         {language === 'en' ? 'Data Viz Dashboard' : 'مشروع تصوير البيانات'}
