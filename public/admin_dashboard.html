@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Buddy - لوحة تحكم البيانات</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f5f5f7; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #5856D6; }
+        .kpi-cards { display: flex; gap: 15px; margin-bottom: 25px; }
+        .card { background: #fff; padding: 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #eee; }
+        .card h3 { font-size: 14px; color: #666; margin: 0; }
+        .card p { font-size: 20px; font-weight: bold; margin: 5px 0; color: #5856D6; }
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-container { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
+        canvas { max-height: 300px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>لوحة تحكم إدارة Study Buddy</h2>
+        
+        <div class="kpi-cards">
+            <div class="card"><h3>إجمالي الأرباح</h3><p>$450,000</p></div>
+            <div class="card"><h3>الوحدات المباعة</h3><p>12,400</p></div>
+            <div class="card"><h3>متوسط السعر</h3><p>$36.2</p></div>
+        </div>
 
+        <div class="charts-grid">
+            <div class="chart-container">
+                <p style="text-align:center; font-weight:bold;">اتجاه الأرباح السنوي (Strategic)</p>
+                <canvas id="lineChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <p style="text
