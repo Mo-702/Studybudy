@@ -2,27 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Study Buddy - Executive DSS</title>
+    <title>Study Buddy - Stable Executive DSS</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #5856D6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        :root { --primary: #5856D6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #ff007f; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); height: 45px; flex-shrink: 0; }
         .nav-links button { background: #334155; border: none; color: white; padding: 6px 12px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.2s; }
         .nav-links button.active { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
-        .back-home { color: #94a3b8; text-decoration: none; font-size: 12px; font-weight: bold; }
         .container { flex: 1; padding: 10px; display: none; flex-direction: column; overflow: hidden; }
         .container.active { display: flex; }
         .slicer-bar { background: #1e293b; padding: 8px; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; font-size: 12px; border: 1px solid #334155; flex-shrink: 0; }
-        .info-icon { cursor: pointer; background: var(--primary); color: white; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; position: relative; }
-        .tooltip-text { visibility: hidden; width: 200px; background: #334155; color: #fff; text-align: center; border-radius: 4px; padding: 6px; position: absolute; z-index: 100; top: 130%; left: 0; opacity: 0; transition: 0.2s; font-size: 10px; border: 1px solid var(--primary); }
-        .info-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
         .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 8px; height: 65px; flex-shrink: 0; }
-        .kpi-card { background: var(--card); border-radius: 8px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        /* Hover Effect for Cards */
+        .kpi-card { 
+            background: var(--card); border-radius: 8px; border: 1px solid #334155; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: 0.3s; 
+        }
+        .kpi-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 4px 12px rgba(88, 86, 214, 0.3); }
+        
         .kpi-card h3 { font-size: 10px; margin: 0; color: #94a3b8; text-transform: uppercase; }
-        .kpi-card p { font-size: 18px; margin: 2px 0 0; font-weight: bold; color: var(--primary); }
+        .kpi-card p { font-size: 18px; margin: 2px 0 0; font-weight: bold; color: #21e6c1; }
         .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex: 1; min-height: 0; padding-bottom: 5px; }
-        .chart-item { background: var(--card); border-radius: 8px; padding: 10px; border: 1px solid #334155; display: flex; flex-direction: column; min-height: 0; }
+        
+        /* Hover for Chart Items */
+        .chart-item { 
+            background: var(--card); border-radius: 8px; padding: 10px; border: 1px solid #334155; 
+            display: flex; flex-direction: column; min-height: 0; transition: 0.3s;
+        }
+        .chart-item:hover { border-color: #21e6c1; }
+        
         .chart-item h4 { font-size: 11px; margin: 0 0 5px 0; text-align: center; color: #cbd5e1; }
         canvas { flex: 1 !important; width: 100% !important; height: 100% !important; }
         select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 3px; font-size: 11px; }
@@ -31,7 +42,7 @@
 <body>
 
 <nav class="navbar">
-    <a href="/" class="back-home">← Back to Home</a>
+    <div style="font-weight: bold; color: var(--primary); font-size: 14px;">STUDY BUDDY DSS</div>
     <div class="nav-links">
         <button class="active" onclick="switchTab('ceo')">CEO (Strategic)</button>
         <button onclick="switchTab('manager')">Manager (Operational)</button>
@@ -42,7 +53,6 @@
 <div id="ceo" class="container active">
     <div class="slicer-bar">
         Year: <select id="ceoYear" onchange="updateCEO()"><option value="2024">2024</option><option value="2023">2023</option></select>
-        <div class="info-icon">! <span class="tooltip-text">Strategic focus: Growth monitoring.</span></div>
     </div>
     <div class="kpi-row">
         <div class="kpi-card"><h3>Total Sales</h3><p id="c_s">$2.4M</p></div>
@@ -59,7 +69,6 @@
     <div class="slicer-bar">
         Region: <select id="m_Reg" onchange="updateMGR()"><option value="Global">Global</option><option value="North">North</option><option value="South">South</option></select>
         Month: <select id="m_Mon" onchange="updateMGR()"><option value="Dec">Dec</option><option value="Nov">Nov</option></select>
-        <div class="info-icon">! <span class="tooltip-text">Operational Slicers: Real-time monitoring of products and countries.</span></div>
     </div>
     <div class="kpi-row" style="grid-template-columns: repeat(2, 1fr);">
         <div class="kpi-card"><h3>Monthly Sales</h3><p id="m_s">$125K</p></div>
@@ -76,7 +85,6 @@
 <div id="analyst" class="container">
     <div class="slicer-bar">
         Analysis: <select id="a_Mod" onchange="updateANL()"><option value="A">Standard</option><option value="B">Aggressive</option></select>
-        <div class="info-icon">! <span class="tooltip-text">Analytical Slicers: Deep exploration of cost vs profit.</span></div>
     </div>
     <div class="charts-grid">
         <div class="chart-item"><h4>Sales vs Profit</h4><canvas id="an1"></canvas></div>
@@ -90,7 +98,10 @@
     let c = {};
     const opt = { 
         responsive: true, maintainAspectRatio: false, 
-        scales: { y: { beginAtZero: true, ticks: {font: {size: 10}} }, x: { ticks: {font: {size: 10}} } },
+        scales: { 
+            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: {font: {size: 10}, color: '#94a3b8'} }, 
+            x: { grid: { display: false }, ticks: {font: {size: 10}, color: '#94a3b8'} } 
+        },
         plugins: { legend: { display: false } }
     };
 
@@ -101,47 +112,46 @@
         event.currentTarget.classList.add('active');
     }
 
-    // CEO
+    // CEO Update Logic
     function updateCEO() {
         const v = document.getElementById('ceoYear').value;
-        const d = v === '2024' ? [1.2,1.8,2.4] : [0.8,1.1,1.4];
-        c.c1.data.datasets[0].data = d; c.c1.update();
+        const factor = v === '2024' ? 1 : 0.7;
+        document.getElementById('c_s').innerText = v === '2024' ? '$2.4M' : '$1.7M';
+        c.c1.data.datasets[0].data = [1.2, 1.8, 2.4 * factor]; c.c1.update();
+        c.c2.data.datasets[0].data = [400*factor, 300*factor, 200*factor, 100*factor]; c.c2.update();
     }
-    c.c1 = new Chart(document.getElementById('ceo1'), { type: 'line', data: { labels: ['2022','2023','2024'], datasets: [{data:[1.2,1.8,2.4], borderColor:'#5856D6'}] }, options: opt });
-    c.c2 = new Chart(document.getElementById('ceo2'), { type: 'bar', data: { labels: ['NA','EU','AS','LA'], datasets: [{data:[400,300,200,100], backgroundColor:'#34d399'}] }, options: opt });
+    c.c1 = new Chart(document.getElementById('ceo1'), { type: 'line', data: { labels: ['2022','2023','2024'], datasets: [{data:[1.2,1.8,2.4], borderColor:'#5856D6', tension: 0.4, fill: true, backgroundColor: 'rgba(88, 86, 214, 0.1)'}] }, options: opt });
+    // CEO Profit by Region - Multi-color as requested
+    c.c2 = new Chart(document.getElementById('ceo2'), { type: 'bar', data: { labels: ['NA','EU','AS','LA'], datasets: [{data:[400,300,200,100], backgroundColor:['#21e6c1', '#bc6ff1', '#ff007f', '#3d5af1']}] }, options: opt });
 
-    // MANAGER (Unified Update)
+    // MANAGER Update Logic (Full Integration)
     function updateMGR() {
         const r = document.getElementById('m_Reg').value;
         const m = document.getElementById('m_Mon').value;
         const factor = (r === 'Global' ? 1 : 0.5) * (m === 'Dec' ? 1 : 0.8);
-        
         document.getElementById('m_s').innerText = '$' + Math.round(125 * factor) + 'K';
         document.getElementById('m_t').innerText = Math.round(92 * factor) + '%';
-        
         c.m1.data.datasets[0].data = [500*factor, 800*factor, 450*factor]; c.m1.update();
-        c.m2.data.datasets[0].data = [50*factor, 30*factor, 40*factor]; c.m2.update();
-        c.m3.data.datasets[0].data = [{x:5,y:50*factor},{x:15,y:20*factor}]; c.m3.update();
+        c.m2.data.datasets[0].data = [120*factor, 80*factor, 150*factor]; c.m2.update();
         c.m4.data.datasets[0].data = [1000*factor, 600*factor, 400*factor]; c.m4.update();
     }
-    c.m1 = new Chart(document.getElementById('mgr1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{data:[500,800,450], backgroundColor:'#fbbf24'}] }, options: opt });
-    c.m2 = new Chart(document.getElementById('mgr2'), { type: 'bar', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[50,30,40], backgroundColor:'#818cf8'}] }, options: opt });
-    c.m3 = new Chart(document.getElementById('mgr3'), { type: 'scatter', data: { datasets: [{data:[{x:5,y:50},{x:15,y:20}], backgroundColor:'#f87171'}] }, options: opt });
-    c.m4 = new Chart(document.getElementById('mgr4'), { type: 'bar', data: { labels: ['US','CA','FR'], datasets: [{data:[1000,600,400], backgroundColor:'#5856D6'}] }, options: opt });
+    c.m1 = new Chart(document.getElementById('mgr1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{data:[500,800,450], backgroundColor:'#21e6c1'}] }, options: opt });
+    c.m2 = new Chart(document.getElementById('mgr2'), { type: 'bar', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[120,80,150], backgroundColor:'#bc6ff1'}] }, options: opt });
+    c.m3 = new Chart(document.getElementById('mgr3'), { type: 'scatter', data: { datasets: [{data:[{x:5,y:50},{x:15,y:20}], backgroundColor:'#ff007f'}] }, options: opt });
+    c.m4 = new Chart(document.getElementById('mgr4'), { type: 'bar', data: { labels: ['US','CA','FR'], datasets: [{data:[1000,600,400], backgroundColor:'#3d5af1'}] }, options: opt });
 
-    // ANALYST (Unified Update)
+    // ANALYST Update Logic (Full Integration)
     function updateANL() {
         const mod = document.getElementById('a_Mod').value;
-        const f = mod === 'A' ? 1 : 1.5;
+        const f = mod === 'A' ? 1 : 1.4;
         c.a1.data.datasets[0].data = [{x:100*f,y:20*f},{x:150*f,y:40*f}]; c.a1.update();
-        c.a2.data.datasets[0].data = [{x:50*f,y:100*f},{x:80*f,y:150*f}]; c.a2.update();
         c.a3.data.datasets[0].data = [40*f, 35*f, 20*f]; c.a3.update();
         c.a4.data.datasets[0].data = [40*f, 60*f, 80*f]; c.a4.update();
     }
-    c.a1 = new Chart(document.getElementById('an1'), { type: 'scatter', data: { datasets: [{data:[{x:100,y:20},{x:150,y:40}], backgroundColor:'#34d399'}] }, options: opt });
-    c.a2 = new Chart(document.getElementById('an2'), { type: 'scatter', data: { datasets: [{data:[{x:50,y:100},{x:80,y:150}], backgroundColor:'#fbbf24'}] }, options: opt });
-    c.a3 = new Chart(document.getElementById('an3'), { type: 'bar', data: { labels: ['U-G','U-E','C-G'], datasets: [{data:[40,35,20], backgroundColor:'#818cf8'}] }, options: opt });
-    c.a4 = new Chart(document.getElementById('an4'), { type: 'line', data: { labels: ['W1','W2','W3'], datasets: [{data:[40,60,80], borderColor:'#5856D6'}] }, options: opt });
+    c.a1 = new Chart(document.getElementById('an1'), { type: 'scatter', data: { datasets: [{data:[{x:100,y:20},{x:150,y:40}], backgroundColor:'#21e6c1'}] }, options: opt });
+    c.a2 = new Chart(document.getElementById('an2'), { type: 'scatter', data: { datasets: [{data:[{x:50,y:100},{x:80,y:150}], backgroundColor:'#ff007f'}] }, options: opt });
+    c.a3 = new Chart(document.getElementById('an3'), { type: 'bar', data: { labels: ['U-G','U-E','C-G'], datasets: [{data:[40,35,20], backgroundColor:'#bc6ff1'}] }, options: opt });
+    c.a4 = new Chart(document.getElementById('an4'), { type: 'line', data: { labels: ['Jan','Feb','Mar'], datasets: [{data:[40,60,80], borderColor:'#21e6c1'}] }, options: opt });
 </script>
 </body>
 </html>
