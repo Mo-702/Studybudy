@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Study Buddy - Full Fixed DSS</title>
+    <title>Study Buddy - Fully Operational DSS</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #5856D6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --success: #21e6c1; --danger: #ff007f; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); min-height: 50px; flex-shrink: 0; }
-        .nav-links button { background: #334155; border: none; color: white; padding: 8px 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 11px; }
-        .nav-links button.active { background: var(--primary); }
+        
+        /* شريط التنقل (زر الرجوع والتنقل ثابت) */
+        .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); min-height: 50px; flex-shrink: 0; z-index: 100; }
+        .nav-links button { background: #334155; border: none; color: white; padding: 8px 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 11px; transition: 0.3s; }
+        .nav-links button.active { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .nav-links button:hover { background: #475569; }
+
         .container { flex: 1; padding: 15px; display: none; flex-direction: column; gap: 15px; overflow: hidden; }
         .container.active { display: flex; }
+
+        /* المربع العلوي المدمج (Enclosure) */
         .header-sect { background: var(--card); border-radius: 10px; padding: 15px; border: 1px solid #334155; flex-shrink: 0; }
         .filter-row { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 12px; display: flex; gap: 15px; align-items: center; }
         .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -19,106 +25,111 @@
         .kpi-box h3 { font-size: 10px; color: #94a3b8; margin: 0; text-transform: uppercase; }
         .kpi-box p { font-size: 20px; margin: 5px 0; font-weight: bold; color: var(--success); }
         .kpi-box span { font-size: 10px; color: #64748b; }
+
         .charts-area { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; min-height: 0; }
         .chart-card { background: var(--card); border-radius: 10px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; }
         .chart-card h4 { font-size: 12px; margin: 0 0 10px 0; border-left: 4px solid var(--primary); padding-left: 8px; }
         .canvas-holder { flex: 1; position: relative; min-height: 0; }
-        select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 3px; font-size: 11px; }
+        
+        select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 4px; font-size: 11px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <div style="font-weight: bold; color: var(--primary);">STUDY BUDDY DSS</div>
+    <div style="font-weight: bold; color: var(--primary); letter-spacing: 1px;">STUDY BUDDY DSS</div>
     <div class="nav-links">
-        <button id="b-ceo" class="active" onclick="tab('ceo')">STRATEGIC</button>
-        <button id="b-mgr" onclick="tab('mgr')">OPERATIONAL</button>
-        <button id="b-anl" onclick="tab('anl')">ANALYTICAL</button>
+        <button id="btn-ceo" class="active" onclick="switchTab('ceo')">STRATEGIC (CEO)</button>
+        <button id="btn-mgr" onclick="switchTab('mgr')">OPERATIONAL (MGR)</button>
+        <button id="btn-anl" onclick="switchTab('anl')">ANALYTICAL (ANL)</button>
     </div>
 </nav>
 
 <div id="ceo" class="container active">
     <div class="header-sect">
-        <div class="filter-row">Year: <select id="s-ceo" onchange="upCEO()"><option value="2024">2024</option><option value="2023">2023</option></select></div>
+        <div class="filter-row">Year: <select id="sel-ceo" onchange="runCEO()"><option value="2024">2024</option><option value="2023">2023</option></select></div>
         <div class="kpi-grid">
-            <div class="kpi-box"><h3>Sales</h3><p id="c-s">$2.4M</p><span>Target: $2.2M</span></div>
-            <div class="kpi-box"><h3>Profit</h3><p id="c-p">$840K</p><span>Margin: 35%</span></div>
+            <div class="kpi-box"><h3>Sales</h3><p id="ceo-s">$2.4M</p><span>Target: $2.2M</span></div>
+            <div class="kpi-box"><h3>Profit</h3><p id="ceo-p">$840K</p><span>Margin: 35%</span></div>
             <div class="kpi-box"><h3>Growth</h3><p>+18%</p><span>Prev: +12%</span></div>
         </div>
     </div>
     <div class="charts-area">
-        <div class="chart-card"><h4>Trend</h4><div class="canvas-holder"><canvas id="ch-c1"></canvas></div></div>
-        <div class="chart-card"><h4>Region</h4><div class="canvas-holder"><canvas id="ch-c2"></canvas></div></div>
+        <div class="chart-card"><h4>Performance Trend</h4><div class="canvas-holder"><canvas id="ch-ceo-1"></canvas></div></div>
+        <div class="chart-card"><h4>Regional Profit</h4><div class="canvas-holder"><canvas id="ch-ceo-2"></canvas></div></div>
     </div>
 </div>
 
 <div id="mgr" class="container">
     <div class="header-sect">
-        <div class="filter-row">Reg: <select id="s-mgr" onchange="upMGR()"><option>Global</option><option>North</option></select></div>
+        <div class="filter-row">Region: <select id="sel-mgr" onchange="runMGR()"><option value="1">Global</option><option value="0.6">North</option></select></div>
         <div class="kpi-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="kpi-box"><h3>Sales</h3><p id="m-s">$125K</p><span>vs Target: +5%</span></div>
-            <div class="kpi-box"><h3>Efficiency</h3><p>92%</p><span style="color:orange">At Risk</span></div>
+            <div class="kpi-box"><h3>Monthly Sales</h3><p id="mgr-s">$125K</p><span>vs Target: +5%</span></div>
+            <div class="kpi-box"><h3>Achievement</h3><p id="mgr-a">92%</p><span style="color:orange">At Risk</span></div>
         </div>
     </div>
     <div class="charts-area">
-        <div class="chart-card"><h4>Products</h4><div class="canvas-holder"><canvas id="ch-m1"></canvas></div></div>
-        <div class="chart-card"><h4>Segments</h4><div class="canvas-holder"><canvas id="ch-m2"></canvas></div></div>
+        <div class="chart-card"><h4>Product Performance</h4><div class="canvas-holder"><canvas id="ch-mgr-1"></canvas></div></div>
+        <div class="chart-card"><h4>Segment Share</h4><div class="canvas-holder"><canvas id="ch-mgr-2"></canvas></div></div>
     </div>
 </div>
 
 <div id="anl" class="container">
     <div class="header-sect">
-        <div class="filter-row">Mode: <select id="s-anl" onchange="upANL()"><option>Standard</option><option>Deep Dive</option></select></div>
+        <div class="filter-row">Analysis: <select id="sel-anl" onchange="runANL()"><option value="1">Standard</option><option value="1.5">Deep Dive</option></select></div>
         <div class="kpi-grid">
-            <div class="kpi-box"><h3>Correlation</h3><p id="a-c">0.82</p><span>Sales/Profit</span></div>
-            <div class="kpi-box"><h3>Discount</h3><p>15%</p><span>Impact: Low</span></div>
-            <div class="kpi-box"><h3>Anomalies</h3><p style="color:var(--danger)">4</p><span>Check Region AS</span></div>
+            <div class="kpi-box"><h3>Correlation</h3><p id="anl-c">0.82</p><span>Sales/Profit</span></div>
+            <div class="kpi-box"><h3>Avg Discount</h3><p>15%</p><span>Impact: Low</span></div>
+            <div class="kpi-box"><h3>Anomalies</h3><p style="color:var(--danger)">4</p><span>Check AS Region</span></div>
         </div>
     </div>
     <div class="charts-area">
-        <div class="chart-card"><h4>Sales vs Profit Matrix</h4><div class="canvas-holder"><canvas id="ch-a1"></canvas></div></div>
-        <div class="chart-card"><h4>Correlation Bar</h4><div class="canvas-holder"><canvas id="ch-a2"></canvas></div></div>
+        <div class="chart-card"><h4>Correlation Matrix</h4><div class="canvas-holder"><canvas id="ch-anl-1"></canvas></div></div>
+        <div class="chart-card"><h4>Cost Analysis</h4><div class="canvas-holder"><canvas id="ch-anl-2"></canvas></div></div>
     </div>
 </div>
 
 <script>
-    let chs = {};
-    const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 9 } } }, x: { ticks: { color: '#94a3b8', font: { size: 9 } } } } };
+    const charts = {};
+    const chartConfig = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } } } };
 
-    function tab(id) {
+    function switchTab(id) {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.getElementById('b-' + id).classList.add('active');
+        document.getElementById('btn-' + id).classList.add('active');
     }
 
-    function upCEO() {
-        const v = document.getElementById('s-ceo').value === '2024' ? 1 : 0.7;
-        document.getElementById('c-s').innerText = v === 1 ? '$2.4M' : '$1.7M';
-        chs.c1.data.datasets[0].data = [1.2, 1.8, 2.4*v]; chs.c1.update();
+    function runCEO() {
+        const factor = document.getElementById('sel-ceo').value === '2024' ? 1 : 0.7;
+        document.getElementById('ceo-s').innerText = factor === 1 ? '$2.4M' : '$1.7M';
+        charts.ceo1.data.datasets[0].data = [1.2, 1.8, 2.4 * factor]; charts.ceo1.update();
+        charts.ceo2.data.datasets[0].data = [400*factor, 300*factor, 200*factor, 100*factor]; charts.ceo2.update();
     }
 
-    function upMGR() {
-        const f = document.getElementById('s-mgr').value === 'Global' ? 1 : 0.6;
-        document.getElementById('m-s').innerText = '$' + Math.round(125 * f) + 'K';
-        chs.m1.data.datasets[0].data = [500*f, 800*f, 450*f]; chs.m1.update();
+    function runMGR() {
+        const factor = parseFloat(document.getElementById('sel-mgr').value);
+        document.getElementById('mgr-s').innerText = '$' + Math.round(125 * factor) + 'K';
+        charts.mgr1.data.datasets[0].data = [500*factor, 800*factor, 450*factor]; charts.mgr1.update();
     }
 
-    function upANL() {
-        const f = document.getElementById('s-anl').value === 'Standard' ? 1 : 1.3;
-        chs.a2.data.datasets[0].data = [40*f, 35*f, 20*f]; chs.a2.update();
+    function runANL() {
+        const factor = parseFloat(document.getElementById('sel-anl').value);
+        charts.anl2.data.datasets[0].data = [40*factor, 35*factor, 20*factor]; charts.anl2.update();
     }
 
     window.onload = () => {
-        chs.c1 = new Chart(document.getElementById('ch-c1'), { type: 'line', data: { labels: ['22','23','24'], datasets: [{data:[1.2,1.8,2.4], borderColor:'#5856D6', tension:0.4}] }, options: opt });
-        chs.c2 = new Chart(document.getElementById('ch-c2'), { type: 'bar', data: { labels: ['NA','EU','AS','LA'], datasets: [{data:[400,300,200,100], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1','#ff007f']}] }, options: opt });
+        // CEO Charts
+        charts.ceo1 = new Chart(document.getElementById('ch-ceo-1'), { type: 'line', data: { labels: ['22','23','24'], datasets: [{data:[1.2,1.8,2.4], borderColor:'#5856D6', tension:0.4, fill:true, backgroundColor:'rgba(88,86,214,0.1)'}] }, options: chartConfig });
+        charts.ceo2 = new Chart(document.getElementById('ch-ceo-2'), { type: 'bar', data: { labels: ['NA','EU','AS','LA'], datasets: [{data:[400,300,200,100], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1','#ff007f']}] }, options: chartConfig });
         
-        chs.m1 = new Chart(document.getElementById('ch-m1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{data:[500,800,450], backgroundColor:'#21e6c1'}] }, options: opt });
-        chs.m2 = new Chart(document.getElementById('ch-m2'), { type: 'bar', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[120,80,150], backgroundColor:'#bc6ff1'}] }, options: opt });
-        
-        // Analytical Charts Fixed
-        chs.a1 = new Chart(document.getElementById('ch-a1'), { type: 'scatter', data: { datasets: [{label: 'Data', data: [{x: 10, y: 20}, {x: 15, y: 10}, {x: 25, y: 35}], backgroundColor: '#21e6c1'}] }, options: opt });
-        chs.a2 = new Chart(document.getElementById('ch-a2'), { type: 'bar', data: { labels: ['U-G','U-E','C-G'], datasets: [{data:[40,35,20], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1']}] }, options: opt });
+        // MGR Charts
+        charts.mgr1 = new Chart(document.getElementById('ch-mgr-1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{data:[500,800,450], backgroundColor:'#21e6c1'}] }, options: chartConfig });
+        charts.mgr2 = new Chart(document.getElementById('ch-mgr-2'), { type: 'bar', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[120,80,150], backgroundColor:'#bc6ff1'}] }, options: chartConfig });
+
+        // ANL Charts
+        charts.anl1 = new Chart(document.getElementById('ch-anl-1'), { type: 'scatter', data: { datasets: [{data:[{x:10,y:20},{x:15,y:10},{x:25,y:35}], backgroundColor:'#21e6c1'}] }, options: chartConfig });
+        charts.anl2 = new Chart(document.getElementById('ch-anl-2'), { type: 'bar', data: { labels: ['U-G','U-E','C-G'], datasets: [{data:[40,35,20], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1']}] }, options: chartConfig });
     };
 </script>
 </body>
