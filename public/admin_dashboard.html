@@ -2,121 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Study Buddy - Professional Unified DSS</title>
+    <title>Study Buddy - Unified Professional DSS</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #5856D6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --success: #21e6c1; --accent: #bc6ff1; }
+        :root { --primary: #5856D6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --success: #21e6c1; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); height: 45px; flex-shrink: 0; }
-        .nav-links button { background: #334155; border: none; color: white; padding: 6px 12px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+        .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); height: 50px; flex-shrink: 0; }
+        .nav-links button { background: #334155; border: none; color: white; padding: 8px 16px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .nav-links button.active { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
-        .container { flex: 1; padding: 12px; display: none; flex-direction: column; overflow: hidden; }
-        .container.active { display: flex; }
         
-        /* الحاوية المدمجة (Enclosure) */
-        .header-box { background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 12px; flex-shrink: 0; }
-        .slicer-row { display: flex; align-items: center; gap: 15px; font-size: 11px; color: #94a3b8; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .kpi-card { background: #0f172a; border-radius: 6px; padding: 8px; text-align: center; border: 1px solid rgba(88, 86, 214, 0.2); }
-        .kpi-card h3 { font-size: 9px; margin: 0; color: #94a3b8; text-transform: uppercase; }
-        .kpi-card p { font-size: 17px; margin: 3px 0; font-weight: bold; color: var(--success); }
-        .kpi-card span { font-size: 9px; color: #64748b; }
+        .container { flex: 1; padding: 15px; display: none; flex-direction: column; overflow: hidden; gap: 15px; }
+        .container.active { display: flex; }
 
-        .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex: 1; min-height: 0; }
-        .chart-card { background: var(--card); border-radius: 8px; padding: 10px; border: 1px solid #334155; display: flex; flex-direction: column; }
-        .chart-card h4 { font-size: 11px; margin: 0 0 8px 0; border-left: 3px solid var(--primary); padding-left: 8px; color: #cbd5e1; }
-        canvas { flex: 1 !important; }
-        select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 2px 5px; font-size: 10px; }
+        /* الحاوية العلوية المدمجة لجميع الصفحات */
+        .integrated-header { background: var(--card); border: 1px solid #334155; border-radius: 10px; padding: 15px; flex-shrink: 0; }
+        .slicer-section { display: flex; gap: 20px; align-items: center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .kpi-card { background: #0f172a; border: 1px solid rgba(88, 86, 214, 0.3); border-radius: 8px; padding: 12px; text-align: center; }
+        .kpi-card h3 { font-size: 10px; margin: 0; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .kpi-card p { font-size: 22px; margin: 5px 0; font-weight: bold; color: var(--success); }
+        .kpi-card span { font-size: 10px; color: #64748b; }
+
+        .main-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; flex: 1; min-height: 0; }
+        .chart-container { background: var(--card); border: 1px solid #334155; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; }
+        .chart-container h4 { font-size: 13px; margin: 0 0 15px 0; border-left: 4px solid var(--primary); padding-left: 10px; }
+        canvas { flex: 1 !important; width: 100% !important; height: 100% !important; }
+        
+        select { background: #334155; color: white; border: 1px solid var(--primary); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <div style="font-weight: bold; color: var(--primary);">STUDY BUDDY DSS</div>
+    <div style="font-weight: bold; font-size: 18px; color: var(--primary);">STUDY BUDDY DSS</div>
     <div class="nav-links">
         <button class="active" onclick="switchTab('ceo')">STRATEGIC (CEO)</button>
-        <button onclick="switchTab('manager')">OPERATIONAL (MGR)</button>
-        <button onclick="switchTab('analyst')">ANALYTICAL (ANL)</button>
+        <button onclick="switchTab('mgr')">OPERATIONAL (MGR)</button>
+        <button onclick="switchTab('anl')">ANALYTICAL (ANL)</button>
     </div>
 </nav>
 
 <div id="ceo" class="container active">
-    <div class="header-box">
-        <div class="slicer-row">Year: <select id="cYear" onchange="uCEO()"><option value="2024">2024</option><option value="2023">2023</option></select></div>
-        <div class="kpi-grid">
-            <div class="kpi-card"><h3>Total Sales</h3><p id="cs">$2.4M</p><span>Target: $2.2M (↑)</span></div>
-            <div class="kpi-card"><h3>Total Profit</h3><p id="cp">$840K</p><span>Margin: 35%</span></div>
-            <div class="kpi-card"><h3>YoY Growth</h3><p>+18%</p><span>Previous: +12%</span></div>
+    <div class="integrated-header">
+        <div class="slicer-section">Year: <select id="ceoYear" onchange="updateCEO()"><option value="2024">2024</option><option value="2023">2023</option></select></div>
+        <div class="kpi-row">
+            <div class="kpi-card"><h3>Total Sales</h3><p id="c_sales">$2.4M</p><span>Target: $2.2M (↑)</span></div>
+            <div class="kpi-card"><h3>Total Profit</h3><p id="c_profit">$840K</p><span>Margin: 35%</span></div>
+            <div class="kpi-card"><h3>Growth</h3><p>+18%</p><span>Prev Year: +12%</span></div>
         </div>
     </div>
-    <div class="charts-grid">
-        <div class="chart-card"><h4>Sales Trend over Years</h4><canvas id="c1"></canvas></div>
-        <div class="chart-card"><h4>Profit by Region</h4><canvas id="c2"></canvas></div>
+    <div class="main-charts">
+        <div class="chart-container"><h4>Annual Sales Trend</h4><canvas id="c_chart1"></canvas></div>
+        <div class="chart-container"><h4>Profit by Region</h4><canvas id="c_chart2"></canvas></div>
     </div>
 </div>
 
-<div id="manager" class="container">
-    <div class="header-box">
-        <div class="slicer-row">Region: <select id="mReg" onchange="uMGR()"><option>Global</option><option>North</option></select> Month: <select id="mMon" onchange="uMGR()"><option>Dec</option><option>Nov</option></select></div>
-        <div class="kpi-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="kpi-card"><h3>Monthly Sales</h3><p id="ms">$125K</p><span>vs Last Month: +5%</span></div>
-            <div class="kpi-card"><h3>Target Achievement</h3><p id="mt" style="color:#fbbf24">92%</p><span>Gap to Goal: 8%</span></div>
+<div id="mgr" class="container">
+    <div class="integrated-header">
+        <div class="slicer-section">Reg: <select id="mReg" onchange="updateMGR()"><option>Global</option><option>North</option></select> Mon: <select onchange="updateMGR()"><option>Dec</option><option>Nov</option></select></div>
+        <div class="kpi-row" style="grid-template-columns: 1fr 1fr;">
+            <div class="kpi-card"><h3>Monthly Sales</h3><p id="m_sales">$125K</p><span>Target: $110K</span></div>
+            <div class="kpi-card"><h3>Target Achievement</h3><p style="color:#fbbf24">92%</p><span>Status: At Risk</span></div>
         </div>
     </div>
-    <div class="charts-grid">
-        <div class="chart-card"><h4>Sales by Product</h4><canvas id="m1"></canvas></div>
-        <div class="chart-card"><h4>Profit by Segment</h4><canvas id="m2"></canvas></div>
+    <div class="main-charts">
+        <div class="chart-container"><h4>Product Performance</h4><canvas id="m_chart1"></canvas></div>
+        <div class="chart-container"><h4>Segment Profit</h4><canvas id="m_chart2"></canvas></div>
     </div>
 </div>
 
-<div id="analyst" class="container">
-    <div class="header-box">
-        <div class="slicer-row">Analysis Mode: <select id="aMod" onchange="uANL()"><option>Standard</option><option>Deep Dive</option></select></div>
-        <div class="kpi-grid">
-            <div class="kpi-card"><h3>Correlation Index</h3><p>0.82</p><span>Sales & Profit</span></div>
+<div id="anl" class="container">
+    <div class="integrated-header">
+        <div class="slicer-section">Analysis: <select id="aMode" onchange="updateANL()"><option>Standard</option><option>Aggressive</option></select></div>
+        <div class="kpi-row">
+            <div class="kpi-card"><h3>Correlation Index</h3><p>0.82</p><span>Sales/Profit</span></div>
             <div class="kpi-card"><h3>Avg Discount</h3><p>15%</p><span>Impact: Low</span></div>
-            <div class="kpi-card"><h3>Anomaly Count</h3><p style="color:#ff007f">4</p><span>Check Region: AS</span></div>
+            <div class="kpi-card"><h3>Anomalies</h3><p style="color:#ff007f">4</p><span>Check Region AS</span></div>
         </div>
     </div>
-    <div class="charts-grid">
-        <div class="chart-card"><h4>Sales vs Profit Correlation</h4><canvas id="a1"></canvas></div>
-        <div class="chart-card"><h4>Profit Matrix</h4><canvas id="a2"></canvas></div>
+    <div class="main-charts">
+        <div class="chart-container"><h4>Sales vs Profit Matrix</h4><canvas id="a_chart1"></canvas></div>
+        <div class="chart-container"><h4>Cost Analysis</h4><canvas id="a_chart2"></canvas></div>
     </div>
 </div>
 
 <script>
     let ch = {};
-    const opt = { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.03)' }, ticks: {font:{size:9}, color:'#64748b'} }, x: { grid: { display: false }, ticks: {font:{size:9}, color:'#64748b'} } }, plugins: { legend: { display: false } } };
+    const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } } } };
 
     function switchTab(id) {
-        document.querySelectorAll('.container').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         event.currentTarget.classList.add('active');
     }
 
-    function uCEO() {
-        const v = document.getElementById('cYear').value === '2024' ? 1 : 0.7;
-        document.getElementById('cs').innerText = v === 1 ? '$2.4M' : '$1.7M';
-        ch.c1.data.datasets[0].data = [1.2, 1.8, 2.4*v]; ch.c1.update();
+    function updateCEO() {
+        const val = document.getElementById('ceoYear').value === '2024' ? 1 : 0.7;
+        document.getElementById('c_sales').innerText = val === 1 ? '$2.4M' : '$1.7M';
+        ch.c1.data.datasets[0].data = [1.2, 1.8, 2.4 * val]; ch.c1.update();
     }
-    ch.c1 = new Chart(document.getElementById('c1'), { type: 'line', data: { labels: ['22','23','24'], datasets: [{data:[1.2,1.8,2.4], borderColor:'#bc6ff1', tension:0.4}] }, options: opt });
-    ch.c2 = new Chart(document.getElementById('c2'), { type: 'bar', data: { labels: ['NA','EU','AS','LA'], datasets: [{data:[400,300,200,100], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1','#475569']}] }, options: opt });
 
-    function uMGR() {
+    function updateMGR() {
         const f = document.getElementById('mReg').value === 'Global' ? 1 : 0.6;
-        document.getElementById('ms').innerText = '$'+Math.round(125*f)+'K';
+        document.getElementById('m_sales').innerText = '$' + Math.round(125 * f) + 'K';
         ch.m1.data.datasets[0].data = [500*f, 800*f, 450*f]; ch.m1.update();
     }
-    ch.m1 = new Chart(document.getElementById('m1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{data:[500,800,450], backgroundColor:'#21e6c1'}] }, options: opt });
-    ch.m2 = new Chart(document.getElementById('m2'), { type: 'bar', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[120,80,150], backgroundColor:'#bc6ff1'}] }, options: opt });
 
-    function uANL() {
-        const f = document.getElementById('aMod').value === 'Standard' ? 1 : 1.3;
+    function updateANL() {
+        const f = document.getElementById('aMode').value === 'Standard' ? 1 : 1.4;
         ch.a2.data.datasets[0].data = [40*f, 35*f, 20*f]; ch.a2.update();
     }
-    ch.a1 = new Chart(document.getElementById('a1'), { type: 'scatter', data: { datasets: [{data:[{x:100,y:20},{x:150,y:40}], backgroundColor:'#21e6c1'}] }, options: opt });
-    ch.a2 = new Chart(document.getElementById('a2'), { type: 'bar', data: { labels: ['U-G','U-E','C-G'], datasets: [{data:[40,35,20], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1']}] }, options: opt });
+
+    window.onload = () => {
+        ch.c1 = new Chart(document.getElementById('c_chart1'), { type: 'line', data: { labels: ['22','23','24'], datasets: [{data:[1.2,1.8,2.4], borderColor:'#5856D6', tension:0.4, fill:true, backgroundColor:'rgba(88,86,214,0.1)'}] }, options: opt });
+        ch.c2 = new Chart(document.getElementById('c_chart2'), { type: 'bar', data: { labels: ['NA','EU','AS','LA'], datasets: [{data:[400,300,200,100], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1','#ff007f']}] }, options: opt });
+        ch.m1 = new Chart(document.getElementById('m_chart1'), { type: 'bar', data: { labels: ['Velo','Ama','Mon'], datasets: [{data:[500,800,450], backgroundColor:'#21e6c1'}] }, options: opt });
+        ch.m2 = new Chart(document.getElementById('m_chart2'), { type: 'bar', data: { labels: ['Gov','SME','Ent'], datasets: [{data:[120,80,150], backgroundColor:'#bc6ff1'}] }, options: opt });
+        ch.a1 = new Chart(document.getElementById('a_chart1'), { type: 'scatter', data: { datasets: [{data:[{x:10,y:20},{x:15,y:40}], backgroundColor:'#21e6c1'}] }, options: opt });
+        ch.a2 = new Chart(document.getElementById('a_chart2'), { type: 'bar', data: { labels: ['U-G','U-E','C-G'], datasets: [{data:[40,35,20], backgroundColor:['#21e6c1','#bc6ff1','#3d5af1']}] }, options: opt });
+    };
 </script>
 </body>
 </html>
