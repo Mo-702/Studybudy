@@ -10,7 +10,7 @@
         
         /* Navbar */
         .navbar { background: var(--card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); min-height: 55px; flex-shrink: 0; }
-        .home-btn { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.3s; font-size: 12px; }
+        .home-btn { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.3s; font-size: 12px; text-decoration: none; display: inline-block; }
         .home-btn:hover { background: #4745c9; transform: scale(1.05); }
         .nav-links button { background: #334155; border: none; color: white; padding: 8px 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-size: 11px; transition: 0.3s; }
         .nav-links button.active { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
@@ -42,7 +42,7 @@
 <body>
 
 <nav class="navbar">
-    <button class="home-btn" onclick="location.reload()">HOME</button>
+    <a href="index.html" class="home-btn">HOME</a>
     <div class="nav-links">
         <button id="b-ceo" class="active" onclick="tab('ceo')">STRATEGIC (CEO)</button>
         <button id="b-mgr" onclick="tab('mgr')">OPERATIONAL (MGR)</button>
