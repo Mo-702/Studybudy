@@ -52,32 +52,8 @@ export default function App() {
         onLanguageChange={setLanguage}
         onLogout={handleLogout}
       />
-
-      {/* زر مشروع تصوير البيانات - يظهر فقط بعد تسجيل الدخول */}
-      <a 
-        href="/admin_dashboard.html" 
-        target="_blank" 
-        style={{
-          position: 'fixed', 
-          bottom: '20px', 
-          right: '20px', 
-          background: '#5856D6', 
-          color: 'white', 
-          padding: '12px 20px', 
-          borderRadius: '50px', 
-          textDecoration: 'none', 
-          zIndex: 9999, 
-          fontSize: '14px',
-          fontWeight: 'bold',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}
-      >
-        <span>📊</span>
-        {language === 'en' ? 'Data Vis Dashboard' : 'مشروع تصوير البيانات'}
-      </a>
+      
+      {/* تم حذف زر الداشبورد الخارجي للاعتماد على الداشبورد المدمج في MainLayout */}
 
       <Toaster position="top-center" richColors />
     </ThemeProvider>
