@@ -1,3 +1,10 @@
+import { useState, useEffect } from 'react';
+import { AuthScreen } from './components/desktop/AuthScreen';
+import { MainLayout } from './components/desktop/MainLayout';
+import { Toaster, toast } from 'sonner';
+import { ThemeProvider } from './contexts/ThemeContext';
+
+export default function App() {
 import { Trophy, Medal, Award } from 'lucide-react';
 
 interface LeaderboardUser {
